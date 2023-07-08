@@ -1,1 +1,116 @@
-https://infraexam.com/lpi/linux-essentials-2-21/final-m10-18-exam/
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Albumy Elvisa Presleya</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div id="albums-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+async function fetchData() {
+  const url = 'https://genius-song-lyrics1.p.rapidapi.com/artist/albums/?id=1645&per_page=20&page=1';
+  const options = {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': '',
+      'X-RapidAPI-Host': 'genius-song-lyrics1.p.rapidapi.com'
+    }
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const result = await response.json();
+    displayData(result);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function formatReleaseDate(releaseDateComponents) {
+  const { year, month, day } = releaseDateComponents;
+  if (year && month && day) {
+    return year +"-"+ month +"-"+ day;
+  }
+  return 'Not available';
+}
+
+function displayData(result) {
+  const albumsList = result.albums;
+
+  const albumsContainer = document.getElementById('albums-container');
+
+  albumsList.forEach(album => {
+    const albumDiv = document.createElement('div');
+    albumDiv.classList.add('album');
+
+    const albumImage = document.createElement('img');
+    albumImage.src = album.cover_art_thumbnail_url;
+    albumDiv.appendChild(albumImage);
+
+    const albumDetails = document.createElement('div');
+    albumDetails.classList.add('album-details');
+
+    const albumTitle = document.createElement('div');
+    albumTitle.classList.add('album-title');
+    albumTitle.textContent = album.full_title;
+    albumDetails.appendChild(albumTitle);
+
+    const albumDate = document.createElement('div');
+    albumDate.classList.add('album-date');
+    albumDate.textContent = 'Data Wydania: ' + formatReleaseDate(album.release_date_components);
+    albumDetails.appendChild(albumDate);
+
+    const albumLink = document.createElement('a');
+    albumLink.href = album.url;
+    albumLink.textContent = 'Link do albumu';
+    albumDetails.appendChild(albumLink);
+
+    albumDiv.appendChild(albumDetails);
+
+    albumsContainer.appendChild(albumDiv);
+  });
+}
+
+fetchData();
+
+
+
+
+
+
+
+
+
+
+.album {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .album img {
+    width: 150px;
+    height: 150px;
+    margin-right: 10px;
+  }
+  
+  .album-details {
+    font-size: 16px;
+  }
+  
+  .album-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .album-date {
+    color: #888;
+  }
